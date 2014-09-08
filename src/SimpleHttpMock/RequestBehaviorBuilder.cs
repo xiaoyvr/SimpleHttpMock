@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 
 namespace SimpleHttpMock
 {
@@ -49,6 +50,14 @@ namespace SimpleHttpMock
         {
             statusCode = httpStatusCode;
             Response = response;
+            Location = location;
+            return this;
+        }
+
+        public RequestBehaviorBuilder RespondContent(HttpStatusCode httpStatusCode, HttpContent content, Uri location = null)
+        {
+            statusCode = httpStatusCode;
+            Response = content;
             Location = location;
             return this;
         }

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 
 namespace SimpleHttpMock
 {
@@ -20,7 +21,21 @@ namespace SimpleHttpMock
             var requestBehavior = behaviors.FirstOrDefault(behavior => behavior.Process(httpRequestMessageWrapper));
             if (requestBehavior != null)
             {
-                var httpResponseMessage = request.CreateResponse(requestBehavior.StatusCode, requestBehavior.Response);
+                HttpResponseMessage httpResponseMessage;
+                var httpContent = requestBehavior.Response as HttpContent;
+                if (httpContent != null)
+                {
+                    var responseMessage = new HttpResponseMessage
+                    {
+                        Content = httpContent,
+                        StatusCode = requestBehavior.StatusCode
+                    };
+                    httpResponseMessage = responseMessage;
+                }
+                else
+                {
+                    httpResponseMessage = request.CreateResponse(requestBehavior.StatusCode, requestBehavior.Response);
+                }
                 httpResponseMessage.Headers.Location = requestBehavior.Location;
                 return httpResponseMessage;
             }
