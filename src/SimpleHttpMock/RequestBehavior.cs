@@ -31,7 +31,7 @@ namespace SimpleHttpMock
 
         private bool UriMatched(Uri requestUri)
         {
-            var matcher = Regex.Match(requestUri.ToString(), @MatchUri, RegexOptions.IgnoreCase);
+            var matcher = Regex.Match(requestUri.ToString(), Regex.Escape(MatchUri), RegexOptions.IgnoreCase);
             return matcher.Success;
         }
     }

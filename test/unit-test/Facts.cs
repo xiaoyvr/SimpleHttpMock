@@ -20,7 +20,6 @@ namespace test
             {
                 using (var httpClient = new HttpClient())
                 {
-                    
                     var response = httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "http://localhost:1122/test")).Result;
                     Assert.Equal(result, response.Content.ReadAsStringAsync().Result); // raw string
                 }
