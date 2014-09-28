@@ -4,7 +4,8 @@ SimpleHttpMock
 A really simple http mock using self host service. 
 
 ### Using Hamcrest Matchers
-* **It.IsRegex ** 
+
+* **It.IsRegex**
 
         var serverBuilder = new MockedHttpServerBuilder();
         serverBuilder
