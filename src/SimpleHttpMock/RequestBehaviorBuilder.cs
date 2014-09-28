@@ -7,22 +7,16 @@ namespace SimpleHttpMock
     public class RequestBehaviorBuilder
     {
         private readonly Func<string, bool> urlMatcher;
-        private readonly string method;
+        private readonly HttpMethod method;
 
         private HttpStatusCode statusCode;
 
         private IRequestProcessor processor;
 
-        public RequestBehaviorBuilder(Func<string, bool> urlMatcher, string method)
+        public RequestBehaviorBuilder(Func<string, bool> urlMatcher, HttpMethod method)
         {
             this.method = method;
             this.urlMatcher = urlMatcher;
-        }
-
-        public RequestBehaviorBuilder(string uri, string method)
-        {
-            this.method = method;
-            urlMatcher = s => s == uri;
         }
 
         public RequestBehaviorBuilder WithRequest<TModel>(

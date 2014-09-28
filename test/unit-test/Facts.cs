@@ -1,7 +1,5 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
-using System.Net.Http.Formatting;
 using SimpleHttpMock;
 using Xunit;
 
@@ -14,7 +12,7 @@ namespace test
         {
             var builder = new MockedHttpServerBuilder();
             const string result = " a \"c\" b ";
-            builder.WhenGet(string.Format("test"))
+            builder.WhenGet(string.Format("/test"))
                 .RespondContent(HttpStatusCode.OK, new StringContent(result));
             using (builder.Build("http://localhost:1122"))
             {

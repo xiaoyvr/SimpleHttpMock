@@ -1,6 +1,8 @@
 ﻿using System.Net;
+using System.Net.Http;
 using SimpleHttpMock;
 using Xunit;
+using Xunit.Extensions;
 
 namespace test
 {
@@ -9,17 +11,51 @@ namespace test
         private const string BaseAddress = "http://localhost:1122";
         private const string RequestUri = "http://localhost:1122/staff?employeeId=Staff0001";
 
-        [Fact]
-        public void should_support_is_regexp()
+        [Theory]
+        [InlineData("/staffs", HttpStatusCode.InternalServerError)]
+        [InlineData("/users", HttpStatusCode.InternalServerError)]
+        [InlineData("/assignees", HttpStatusCode.OK)]
+        public void should_support_is_regex(string url, HttpStatusCode expectedStatusCode)
         {
             var serverBuilder = new MockedHttpServerBuilder();
             serverBuilder
-                .WhenGet(It.IsRegex(@"/staff\?employeeId=Staff0001"))
+                .WhenGet(It.IsRegex(@"/(staff)|(user)s"))
                 .Respond(HttpStatusCode.InternalServerError);
 
             using (serverBuilder.Build(BaseAddress))
             {
-                var response = Get(RequestUri);
+                var response = Get(string.Format("{0}{1}", BaseAddress, url));
+                Assert.Equal(expectedStatusCode, response.StatusCode);
+            }
+        }
+
+        [Fact]
+        public void should_support_head_request()
+        {
+            var serverBuilder = new MockedHttpServerBuilder();
+            serverBuilder
+                .When(It.IsRegex(@"/staffs"), HttpMethod.Head)
+                .Respond(HttpStatusCode.InternalServerError);
+
+            using (serverBuilder.Build(BaseAddress))
+            {
+                var response = SendHttpRequest(string.Format("{0}/staffs", BaseAddress), HttpMethod.Head);
+                Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+            }
+        }
+
+        [Fact]
+        public void should_support_is_regex_for_post()
+        {
+            var serverBuilder = new MockedHttpServerBuilder();
+            serverBuilder
+                .WhenPost(It.IsRegex(@"/staffs"))
+                .Respond(HttpStatusCode.InternalServerError);
+
+            using (serverBuilder.Build(BaseAddress))
+            {
+                var data = new {Name = "Staff", Email = "emal@staff.com"};
+                var response = Post(string.Format("{0}/staffs", BaseAddress), data);
                 Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
             }
         }
