@@ -7,26 +7,42 @@ A really simple http mock using self host service.
 
 * **It.IsRegex**
 
-        var serverBuilder = new MockedHttpServerBuilder();
-        serverBuilder
-            .WhenGet(It.IsRegex(@"/(staff)|(user)s"))
-            .Respond(HttpStatusCode.InternalServerError);
+```cs
+ var serverBuilder = new MockedHttpServerBuilder();
+ serverBuilder
+     .WhenGet(It.IsRegex(@"/(staff)|(user)s"))
+     .Respond(HttpStatusCode.InternalServerError);
 
-        using (serverBuilder.Build(BaseAddress))
-        {
-            var response = Get("http://localhost/users"));
-            Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
-        }
+ using (serverBuilder.Build(BaseAddress))
+ {
+     var response = Get("http://localhost/users"));
+     Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+ }
+
+```
 
 * **It.IsWildCard**
 
-		
-		serverBuilder
-		     .WhenGet(It.IsWildcard(@"/staffs/?"))
-		     .Respond(HttpStatusCode.Unauthorized);
+```cs	
+serverBuilder
+    .WhenGet(It.IsWildcard(@"/staffs/?"))
+    .Respond(HttpStatusCode.Unauthorized);
+```
 
 * **It.Is**
 
-		serverBuilder
-		     .WhenGet(It.Is("/staffs"))
-		     .Respond(HttpStatusCode.OK);
+```cs
+serverBuilder
+     .WhenGet(It.Is("/staffs"))
+     .Respond(HttpStatusCode.OK);
+```
+
+
+### Other methods
+
+```cs	
+serverBuilder
+    .When(It.IsWildcard(@"/staffs/?"), HttpMethod.Patch)
+    .Respond(HttpStatusCode.Unauthorized);
+```
+
