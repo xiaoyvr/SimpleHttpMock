@@ -5,12 +5,12 @@ A really simple http mock using self host service.
 
 ### Using Hamcrest Matchers
 
-* **It.IsRegex**
+* **Matchers.Regex**
 
 ```cs
  var serverBuilder = new MockedHttpServerBuilder();
  serverBuilder
-     .WhenGet(It.IsRegex(@"/(staff)|(user)s"))
+     .WhenGet(Matchers.Regex(@"/(staff)|(user)s"))
      .Respond(HttpStatusCode.InternalServerError);
 
  using (serverBuilder.Build(BaseAddress))
@@ -21,19 +21,19 @@ A really simple http mock using self host service.
 
 ```
 
-* **It.IsWildCard**
+* **Matchers.WildCard**
 
 ```cs	
 serverBuilder
-    .WhenGet(It.IsWildcard(@"/staffs/?"))
+    .WhenGet(Matchers.Wildcard(@"/staffs/?"))
     .Respond(HttpStatusCode.Unauthorized);
 ```
 
-* **It.Is**
+* **Matchers.Is**
 
 ```cs
 serverBuilder
-     .WhenGet(It.Is("/staffs"))
+     .WhenGet(Matchers.Is("/staffs"))
      .Respond(HttpStatusCode.OK);
 ```
 
@@ -42,7 +42,7 @@ serverBuilder
 
 ```cs	
 serverBuilder
-    .When(It.IsWildcard(@"/staffs/?"), HttpMethod.Patch)
+    .When(Matchers.Wildcard(@"/staffs/?"), HttpMethod.Patch)
     .Respond(HttpStatusCode.Unauthorized);
 ```
 

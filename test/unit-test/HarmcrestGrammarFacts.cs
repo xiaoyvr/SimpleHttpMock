@@ -19,7 +19,7 @@ namespace test
         {
             var serverBuilder = new MockedHttpServerBuilder();
             serverBuilder
-                .WhenGet(It.IsRegex(@"/(staff)|(user)s"))
+                .WhenGet(Matchers.Regex(@"/(staff)|(user)s"))
                 .Respond(HttpStatusCode.InternalServerError);
 
             using (serverBuilder.Build(BaseAddress))
@@ -34,7 +34,7 @@ namespace test
         {
             var serverBuilder = new MockedHttpServerBuilder();
             serverBuilder
-                .When(It.IsRegex(@"/staffs"), HttpMethod.Head)
+                .When(Matchers.Regex(@"/staffs"), HttpMethod.Head)
                 .Respond(HttpStatusCode.InternalServerError);
 
             using (serverBuilder.Build(BaseAddress))
@@ -49,7 +49,7 @@ namespace test
         {
             var serverBuilder = new MockedHttpServerBuilder();
             serverBuilder
-                .WhenPost(It.IsRegex(@"/staffs"))
+                .WhenPost(Matchers.Regex(@"/staffs"))
                 .Respond(HttpStatusCode.InternalServerError);
 
             using (serverBuilder.Build(BaseAddress))
@@ -65,7 +65,7 @@ namespace test
         {
             var serverBuilder = new MockedHttpServerBuilder();
             serverBuilder
-                .WhenGet(It.IsWildcard(@"/staff*"))
+                .WhenGet(Matchers.Wildcard(@"/staff*"))
                 .Respond(HttpStatusCode.InternalServerError);
 
             using (serverBuilder.Build(BaseAddress))
@@ -80,7 +80,7 @@ namespace test
         {
             var serverBuilder = new MockedHttpServerBuilder();
             serverBuilder
-                .WhenGet(It.IsWildcard(@"/staffs/?"))
+                .WhenGet(Matchers.Wildcard(@"/staffs/?"))
                 .Respond(HttpStatusCode.InternalServerError);
 
             using (serverBuilder.Build(BaseAddress))
@@ -95,7 +95,7 @@ namespace test
         {
             var serverBuilder = new MockedHttpServerBuilder();
             serverBuilder
-                .WhenGet(It.Is("/staff?employeeId=Staff0001"))
+                .WhenGet(Matchers.Is("/staff?employeeId=Staff0001"))
                 .Respond(HttpStatusCode.InternalServerError);
 
             using (serverBuilder.Build(BaseAddress))

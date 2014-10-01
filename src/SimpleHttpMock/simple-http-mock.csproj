@@ -65,7 +65,7 @@
     <Compile Include="AnonymousTypeExtensions.cs" />
     <Compile Include="CustomHttpContentExtension.cs" />
     <Compile Include="IRequestProcessor.cs" />
-    <Compile Include="It.cs" />
+    <Compile Include="Matchers.cs" />
     <Compile Include="MockedHttpServer.cs" />
     <Compile Include="MockedHttpServerBuilder.cs" />
     <Compile Include="MockHandler.cs" />

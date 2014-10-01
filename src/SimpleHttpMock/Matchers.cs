@@ -3,13 +3,13 @@ using System.Text.RegularExpressions;
 
 namespace SimpleHttpMock
 {
-    public class It
+    public class Matchers
     {
-        public static Func<string, bool> IsRegex(string regexPattern)
+        public static Func<string, bool> Regex(string regexPattern)
         {
             return url =>
                 {
-                    var match = Regex.Match(url, regexPattern, RegexOptions.IgnoreCase);
+                    var match = System.Text.RegularExpressions.Regex.Match(url, regexPattern, RegexOptions.IgnoreCase);
                     return match.Success;
                 };
         }
@@ -19,7 +19,7 @@ namespace SimpleHttpMock
             return url => url == urlAndQuery;
         }
 
-        public static Func<string, bool> IsWildcard(string wildCardPattern)
+        public static Func<string, bool> Wildcard(string wildCardPattern)
         {
             return s => new WildCardMatcher(wildCardPattern, RegexOptions.IgnoreCase).Match(s);
         }

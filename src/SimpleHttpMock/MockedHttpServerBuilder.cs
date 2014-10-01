@@ -18,7 +18,7 @@ namespace SimpleHttpMock
 
         public RequestBehaviorBuilder WhenGet(string uri)
         {
-            return WhenGet(It.Is(uri));
+            return WhenGet(Matchers.Is(uri));
         }
 
         public RequestBehaviorBuilder WhenGet(Func<string, bool> urlMatcher)
@@ -28,7 +28,7 @@ namespace SimpleHttpMock
 
         public RequestBehaviorBuilder WhenPost(string uri)
         {
-            return WhenPost(It.Is(uri));
+            return WhenPost(Matchers.Is(uri));
         }
 
         public RequestBehaviorBuilder WhenPost(Func<string, bool> urlMatcher)
@@ -38,7 +38,7 @@ namespace SimpleHttpMock
 
         public RequestBehaviorBuilder WhenPut(string uri)
         {
-            return WhenPut(It.Is(uri));
+            return WhenPut(Matchers.Is(uri));
         }
 
         public RequestBehaviorBuilder WhenPut(Func<string, bool> urlMatcher)
@@ -48,7 +48,7 @@ namespace SimpleHttpMock
 
         public RequestBehaviorBuilder WhenDelete(string uri)
         {
-            return WhenDelete(It.Is(uri));
+            return WhenDelete(Matchers.Is(uri));
         }
 
         public RequestBehaviorBuilder WhenDelete(Func<string, bool> urlMatcher)
