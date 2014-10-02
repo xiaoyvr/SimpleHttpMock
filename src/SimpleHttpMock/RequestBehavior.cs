@@ -1,38 +1,34 @@
 ﻿using System;
 using System.Net;
-using System.Text.RegularExpressions;
+using System.Net.Http;
 
 namespace SimpleHttpMock
 {
     class RequestBehavior
     {
-        private readonly string method;
+        private readonly HttpMethod method;
         public object Response { get; private set; }
         public Uri Location { get; set; }
         public HttpStatusCode StatusCode { get; private set; }
-        public string MatchUri { get; private set; }
+        public Func<string, bool> urlMatcher { get; private set; }
         public IRequestProcessor RequestProcessor { get; private set; }
 
-        public RequestBehavior(HttpStatusCode statusCode, string matchUri, string method, IRequestProcessor requestProcessor, object response, Uri location)
+        public RequestBehavior(HttpStatusCode statusCode, Func<string, bool> urlMatcher, HttpMethod method, IRequestProcessor requestProcessor, object response, Uri location)
         {
             this.method = method;
             Response = response;
             Location = location;
-            MatchUri = matchUri;
             StatusCode = statusCode;
+            this.urlMatcher = urlMatcher;
             RequestProcessor = requestProcessor;
         }
 
         public bool Process(HttpRequestMessageWrapper httpRequestMessageWrapper)
         {
-            var uriMatched = UriMatched(httpRequestMessageWrapper.RequestUri) && httpRequestMessageWrapper.Method.Equals(method);
-            return uriMatched && RequestProcessor.Process(httpRequestMessageWrapper);
-        }
-
-        private bool UriMatched(Uri requestUri)
-        {
-            var matcher = Regex.Match(requestUri.ToString(), Regex.Escape(MatchUri), RegexOptions.IgnoreCase);
-            return matcher.Success;
+            var pathAndQuery = httpRequestMessageWrapper.RequestUri.PathAndQuery;
+            var isUriMatch = urlMatcher(pathAndQuery);
+            var isMethodMatch = httpRequestMessageWrapper.Method.Equals(method.ToString());
+            return isUriMatch && isMethodMatch && RequestProcessor.Process(httpRequestMessageWrapper);
         }
     }
 }

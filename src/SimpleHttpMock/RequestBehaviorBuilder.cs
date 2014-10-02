@@ -6,15 +6,17 @@ namespace SimpleHttpMock
 {
     public class RequestBehaviorBuilder
     {
-        private readonly string method;
-        private readonly string uri;
+        private readonly Func<string, bool> urlMatcher;
+        private readonly HttpMethod method;
+
         private HttpStatusCode statusCode;
+
         private IRequestProcessor processor;
 
-        public RequestBehaviorBuilder(string uri,string method)
+        public RequestBehaviorBuilder(Func<string, bool> urlMatcher, HttpMethod method)
         {
-            this.uri = uri;
             this.method = method;
+            this.urlMatcher = urlMatcher;
         }
 
         public RequestBehaviorBuilder WithRequest<TModel>(
@@ -63,12 +65,12 @@ namespace SimpleHttpMock
         }
 
         protected object Response = string.Empty;
+
         protected Uri Location = default(Uri);
-        
 
         internal RequestBehavior Build()
         {
-            return new RequestBehavior(statusCode, uri, method, processor?? new AlwaysMatchProcessor(),Response, Location);
+            return new RequestBehavior(statusCode, urlMatcher, method, processor?? new AlwaysMatchProcessor(),Response, Location);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Web.Http.SelfHost;
 
 namespace SimpleHttpMock
@@ -15,29 +16,54 @@ namespace SimpleHttpMock
             return new MockedHttpServer(handler, baseAddress, setup);
         }
 
-        public RequestBehaviorBuilder WhenPost(string uri)
-        {
-            return CreateRequestBehaviorBuilder(uri, "POST");
-        }
-
         public RequestBehaviorBuilder WhenGet(string uri)
         {
-            return CreateRequestBehaviorBuilder(uri,"GET");
+            return WhenGet(Matchers.Is(uri));
+        }
+
+        public RequestBehaviorBuilder WhenGet(Func<string, bool> urlMatcher)
+        {
+            return CreateRequestBehaviorBuilder(urlMatcher, HttpMethod.Get);
+        }
+
+        public RequestBehaviorBuilder WhenPost(string uri)
+        {
+            return WhenPost(Matchers.Is(uri));
+        }
+
+        public RequestBehaviorBuilder WhenPost(Func<string, bool> urlMatcher)
+        {
+            return CreateRequestBehaviorBuilder(urlMatcher, HttpMethod.Post);
         }
 
         public RequestBehaviorBuilder WhenPut(string uri)
         {
-            return CreateRequestBehaviorBuilder(uri,"PUT");
+            return WhenPut(Matchers.Is(uri));
+        }
+
+        public RequestBehaviorBuilder WhenPut(Func<string, bool> urlMatcher)
+        {
+            return CreateRequestBehaviorBuilder(urlMatcher, HttpMethod.Put);
         }
 
         public RequestBehaviorBuilder WhenDelete(string uri)
         {
-            return CreateRequestBehaviorBuilder(uri, "DELETE");
+            return WhenDelete(Matchers.Is(uri));
         }
 
-        private RequestBehaviorBuilder CreateRequestBehaviorBuilder(string uri, string method)
+        public RequestBehaviorBuilder WhenDelete(Func<string, bool> urlMatcher)
         {
-            var builder = new RequestBehaviorBuilder(uri,method);
+            return CreateRequestBehaviorBuilder(urlMatcher, HttpMethod.Delete);
+        }
+
+        public RequestBehaviorBuilder When(Func<string, bool> urlMatcher, HttpMethod httpMethod)
+        {
+            return CreateRequestBehaviorBuilder(urlMatcher, httpMethod);
+        }
+
+        private RequestBehaviorBuilder CreateRequestBehaviorBuilder(Func<string, bool> urlMatcher, HttpMethod httpMethod)
+        {
+            var builder = new RequestBehaviorBuilder(urlMatcher, httpMethod);
             builders.Add(builder);
             return builder;
         }

@@ -65,6 +65,7 @@
     <Compile Include="AnonymousTypeExtensions.cs" />
     <Compile Include="CustomHttpContentExtension.cs" />
     <Compile Include="IRequestProcessor.cs" />
+    <Compile Include="Matchers.cs" />
     <Compile Include="MockedHttpServer.cs" />
     <Compile Include="MockedHttpServerBuilder.cs" />
     <Compile Include="MockHandler.cs" />
@@ -74,9 +75,13 @@
     <Compile Include="RequestBehaviorBuilder.cs" />
     <Compile Include="RequestBehaviors.cs" />
     <Compile Include="RequestProcessor.cs" />
+    <Compile Include="WildCardMatcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="matchers\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
