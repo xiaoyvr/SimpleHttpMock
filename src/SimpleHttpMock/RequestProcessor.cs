@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Dynamic;
 using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace SimpleHttpMock
 {
@@ -29,6 +31,20 @@ namespace SimpleHttpMock
             return (ActualRequest<T>)actualRequest;
         }
 
+        public ActualRequest GetActualRequest()
+        {
+            if (actualRequest == null)
+            {
+                var content = request.Content.ReadAsStringAsync().Result;
+                actualRequest = new ActualRequest
+                {
+                    RequestUri = request.RequestUri,
+                    RequestBody = JsonConvert.DeserializeObject<ExpandoObject>(content),
+                };
+            }
+            return (ActualRequest)actualRequest;
+        }
+
         public Uri RequestUri { get; private set; }
     }
 
@@ -46,6 +62,30 @@ namespace SimpleHttpMock
         public bool Process(HttpRequestMessageWrapper httpRequestMessageWrapper)
         {
             var actualRequest = httpRequestMessageWrapper.GetActualRequest<T>();
+            var matched = matchFunc(actualRequest);
+            if (matched)
+            {
+                callback(actualRequest);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public class RequestProcessor : IRequestProcessor
+    {
+        private readonly Func<ActualRequest, bool> matchFunc;
+        private readonly Action<ActualRequest> callback;
+
+        public RequestProcessor(Func<ActualRequest, bool> matchFunc, Action<ActualRequest> callback)
+        {
+            this.matchFunc = matchFunc;
+            this.callback = callback;
+        }
+
+        public bool Process(HttpRequestMessageWrapper httpRequestMessageWrapper)
+        {
+            var actualRequest = httpRequestMessageWrapper.GetActualRequest();
             var matched = matchFunc(actualRequest);
             if (matched)
             {

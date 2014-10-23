@@ -28,6 +28,12 @@ namespace SimpleHttpMock
             return this;
         }
 
+        public RequestBehaviorBuilder WithRequest(Action<ActualRequest> action, Func<ActualRequest, bool> matchFunc = null)
+        {
+            processor = new RequestProcessor(matchFunc ?? (r => true), action);
+            return this;
+        }
+
         public RequestBehaviorBuilder WithMultipartRequest(Action<ActualRequest<MultipartContentProvider>> action)
         {
             processor = new RequestProcessor<MultipartContentProvider>((r => true), action);
