@@ -19,10 +19,12 @@ namespace SimpleHttpMock
         {
             var httpRequestMessageWrapper = new HttpRequestMessageWrapper(request);
             var requestBehavior = behaviors.FirstOrDefault(behavior => behavior.Process(httpRequestMessageWrapper));
+            
             if (requestBehavior != null)
             {
                 HttpResponseMessage httpResponseMessage;
                 var httpContent = requestBehavior.Response as HttpContent;
+
                 if (httpContent != null)
                 {
                     var responseMessage = new HttpResponseMessage
@@ -36,6 +38,13 @@ namespace SimpleHttpMock
                 {
                     httpResponseMessage = request.CreateResponse(requestBehavior.StatusCode, requestBehavior.Response);
                 }
+
+                var httpHeaders = requestBehavior.Headers;
+                if (httpHeaders != null && httpHeaders.Count > 0)
+                {
+                    httpHeaders.ToList().ForEach(header=>httpResponseMessage.Headers.Add(header.Key,header.Value));
+                }
+
                 httpResponseMessage.Headers.Location = requestBehavior.Location;
                 return httpResponseMessage;
             }

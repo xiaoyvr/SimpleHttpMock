@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 
@@ -12,8 +13,10 @@ namespace SimpleHttpMock
         public HttpStatusCode StatusCode { get; private set; }
         public Func<string, bool> urlMatcher { get; private set; }
         public IRequestProcessor RequestProcessor { get; private set; }
+        public IDictionary<string, string> Headers { get; private set; }
 
-        public RequestBehavior(HttpStatusCode statusCode, Func<string, bool> urlMatcher, HttpMethod method, IRequestProcessor requestProcessor, object response, Uri location)
+
+        public RequestBehavior(HttpStatusCode statusCode, Func<string, bool> urlMatcher, HttpMethod method, IRequestProcessor requestProcessor, object response, Uri location,IDictionary<string,string> headers )
         {
             this.method = method;
             Response = response;
@@ -21,6 +24,7 @@ namespace SimpleHttpMock
             StatusCode = statusCode;
             this.urlMatcher = urlMatcher;
             RequestProcessor = requestProcessor;
+            Headers = headers;
         }
 
         public bool Process(HttpRequestMessageWrapper httpRequestMessageWrapper)
