@@ -13,7 +13,7 @@ namespace SimpleHttpMock
         public HttpStatusCode StatusCode { get; private set; }
         public Func<string, bool> urlMatcher { get; private set; }
         public IRequestProcessor RequestProcessor { get; private set; }
-        public IDictionary<string, string> Headers { get; set; }
+        public IDictionary<string, string> Headers { get; private set; }
 
 
         public RequestBehavior(HttpStatusCode statusCode, Func<string, bool> urlMatcher, HttpMethod method, IRequestProcessor requestProcessor, object response, Uri location,IDictionary<string,string> headers )
