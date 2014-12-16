@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
@@ -55,6 +56,27 @@ namespace test
                     Assert.Equal(result, response.Content.ReadAsStringAsync().Result); // raw string
                     Assert.Equal("a", actualRequest.RequestBody.Field);
                     Assert.Equal("b", actualRequest.RequestBody.Field2);
+                }
+            }
+
+        }
+
+        [Fact]
+        public void should_be_able_to_accept_custom_header()
+        {
+            var builder = new MockedHttpServerBuilder();
+            const string content = "dummy";
+            const string headerValue = "testHeaderValue";
+            builder.WhenGet(string.Format("/test"))
+                .RespondContent(HttpStatusCode.OK, new StringContent(content))
+                .RespondHeaders(new { headerKey = headerValue });
+            using (builder.Build("http://localhost:1122"))
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    var response = httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "http://localhost:1122/test")).Result;
+                    Assert.Equal(content, response.Content.ReadAsStringAsync().Result);
+                    Assert.Equal(headerValue, response.Headers.GetValues("headerKey").First());
                 }
             }
 
