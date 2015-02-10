@@ -34,6 +34,23 @@ namespace test
             }
         }
 
+        [Fact]
+        public void should_matches_url_when_it_is_absolute_uri()
+        {
+            var builder = new MockedHttpServerBuilder();
+            builder
+                .WhenGet("http://localhost:1122/test")
+                .Respond(HttpStatusCode.InternalServerError);
+            using (builder.Build("http://localhost:1122"))
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    var response = httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "http://localhost:1122/test")).Result;
+                    Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+                }
+            }
+        }
+
 
         [Fact]
         public void should_be_able_to_accept_string_content()
