@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace SimpleHttpMock
 {
@@ -12,6 +14,8 @@ namespace SimpleHttpMock
         private HttpStatusCode statusCode;
 
         private IRequestProcessor processor;
+
+        private IDictionary<string, string> headers;
 
         public RequestBehaviorBuilder(Func<string, bool> urlMatcher, HttpMethod method)
         {
@@ -25,6 +29,12 @@ namespace SimpleHttpMock
             Func<ActualRequest<TModel>, bool> matchFunc = null)
         {
             processor = new RequestProcessor<TModel>(matchFunc?? (r => true), action);
+            return this;
+        }
+
+        public RequestBehaviorBuilder WithRequest(Action<ActualRequest> action, Func<ActualRequest, bool> matchFunc = null)
+        {
+            processor = new RequestProcessor(matchFunc ?? (r => true), action);
             return this;
         }
 
@@ -64,13 +74,20 @@ namespace SimpleHttpMock
             return this;
         }
 
+        public RequestBehaviorBuilder RespondHeaders(dynamic headers)
+        {
+            this.headers =
+                JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(headers));
+            return this;
+        }
+
         protected object Response = string.Empty;
 
         protected Uri Location = default(Uri);
 
         internal RequestBehavior Build()
         {
-            return new RequestBehavior(statusCode, urlMatcher, method, processor?? new AlwaysMatchProcessor(),Response, Location);
+            return new RequestBehavior(statusCode, urlMatcher, method, processor ?? new AlwaysMatchProcessor(), Response, Location, headers);
         }
     }
 }

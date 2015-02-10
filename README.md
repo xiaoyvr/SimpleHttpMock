@@ -1,4 +1,4 @@
-SimpleHttpMock
+SimpleHttpMock [![Build status](https://ci.appveyor.com/api/projects/status/wpscw2efwccjr0l4?svg=true)](https://ci.appveyor.com/project/xiaoyvr/simplehttpmock)
 ==============
 
 A really simple http mock using self host service. 
