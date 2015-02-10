@@ -12,6 +12,23 @@ namespace test
     public class Facts
     {
         [Fact]
+        public void should_be_not_case_sensitive()
+        {
+            var builder = new MockedHttpServerBuilder();
+            builder
+                .WhenGet("/Test")
+                .Respond(HttpStatusCode.InternalServerError);
+            using (builder.Build("http://localhost:1122"))
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    var response = httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "http://localhost:1122/test")).Result;
+                    Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+                }
+            }
+        }
+
+        [Fact]
         public void should_read_as_model_wen_media_type_is_json()
         {
             var request = default(List<StreamEntity>).ToRequest();

@@ -17,11 +17,15 @@ namespace SimpleHttpMock
         public static Func<string, bool> Is(string urlPattern)
         {
             return
-                pathAndQuery => pathAndQuery == (
-                    Uri.IsWellFormedUriString(urlPattern, UriKind.Absolute)
-                        ? new Uri(urlPattern).PathAndQuery
-                        : urlPattern
-                    );
+                pathAndQuery =>
+                {
+                    var lowerStr = urlPattern.ToLower();
+                    return pathAndQuery.ToLower() == (
+                                        Uri.IsWellFormedUriString(lowerStr, UriKind.Absolute)
+                                            ? new Uri(lowerStr).PathAndQuery
+                                            : lowerStr
+                                        );
+                };
         }
 
         public static Func<string, bool> Wildcard(string wildCardPattern)
