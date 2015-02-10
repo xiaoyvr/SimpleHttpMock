@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -10,6 +11,36 @@ namespace test
 {
     public class Facts
     {
+        [Fact]
+        public void should_read_as_model_wen_media_type_is_json()
+        {
+            var request = default(List<StreamEntity>).ToRequest();
+            var builder = new MockedHttpServerBuilder();
+            builder
+                .WhenPost(string.Format("/streams/test"))
+                .WithRequest<List<StreamEntity>>(r => request = r)
+                .Respond(HttpStatusCode.OK);
+            using (builder.Build("http://localhost:1122"))
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    const string result = @"[
+                      {
+                        ""eventId"": ""e1fdf1f0-a66d-4f42-95e6-d6588cc22e9b"",
+                        ""id"": 0
+                      }
+                    ]";
+
+                    var content = new StringContent(result);
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                    var response = httpClient.PostAsync("http://localhost:1122/streams/test", content).Result;
+                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                    Assert.NotNull(request.RequestBody);
+                }
+            }
+        }
+
         [Fact]
         public void should_read_string_as_request_body_for_unknow_content_type()
         {
@@ -23,7 +54,12 @@ namespace test
             {
                 using (var httpClient = new HttpClient())
                 {
-                    const string result = @"[{'eventId': 'e1fdf1f0-a66d-4f42-95e6-d6588cc22e9b','id': 0}}]";
+                     const string result = @"[
+                      {
+                        ""eventId"": ""e1fdf1f0-a66d-4f42-95e6-d6588cc22e9b"",
+                        ""id"": 0
+                      }
+                    ]";
                     var content = new StringContent(result);
                     content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.eventstore.events+json");
 

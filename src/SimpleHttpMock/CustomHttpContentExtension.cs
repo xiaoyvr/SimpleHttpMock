@@ -7,7 +7,7 @@ namespace SimpleHttpMock
         public static T Read<T>(this HttpContent content)
         {
             var contentType = content.Headers.ContentType;
-            if (contentType != null)
+            if (contentType != null && contentType.MediaType != "application/json")
             {
                 switch (contentType.MediaType)
                 {
