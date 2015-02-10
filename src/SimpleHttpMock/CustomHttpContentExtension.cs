@@ -11,10 +11,10 @@ namespace SimpleHttpMock
             {
                 switch (contentType.MediaType)
                 {
-                    case "application/x-www-form-urlencoded":
-                        return (T)(object) content.ReadAsStringAsync().Result;
                     case "multipart/form-data":
                         return (T)(object) new MultipartContentProvider(content.ReadAsMultipartAsync().Result);
+                    default:
+                        return (T)(object)content.ReadAsStringAsync().Result;
                 }
             }
             return content.ReadAsAsync<T>().Result;

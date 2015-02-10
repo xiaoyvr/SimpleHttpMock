@@ -11,6 +11,31 @@ namespace test
     public class Facts
     {
         [Fact]
+        public void should_read_string_as_request_body_for_unknow_content_type()
+        {
+            var request = default(object).ToRequest();
+            var builder = new MockedHttpServerBuilder();
+            builder
+                .WhenPost(string.Format("/streams/test"))
+                .WithRequest<object>(r => request = r)
+                .Respond(HttpStatusCode.OK);
+            using (builder.Build("http://localhost:1122"))
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    const string result = @"[{'eventId': 'e1fdf1f0-a66d-4f42-95e6-d6588cc22e9b','id': 0}}]";
+                    var content = new StringContent(result);
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.eventstore.events+json");
+
+                    var response = httpClient.PostAsync("http://localhost:1122/streams/test", content).Result;
+                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                    Assert.NotNull(request.RequestBody);
+                }
+            }
+        }
+
+
+        [Fact]
         public void should_be_able_to_accept_string_content()
         {
             var builder = new MockedHttpServerBuilder();
