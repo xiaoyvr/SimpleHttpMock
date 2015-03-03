@@ -7,14 +7,14 @@ namespace SimpleHttpMock
         public static T Read<T>(this HttpContent content)
         {
             var contentType = content.Headers.ContentType;
-            if (contentType != null)
+            if (contentType != null && contentType.MediaType != "application/json")
             {
                 switch (contentType.MediaType)
                 {
-                    case "application/x-www-form-urlencoded":
-                        return (T)(object) content.ReadAsStringAsync().Result;
                     case "multipart/form-data":
                         return (T)(object) new MultipartContentProvider(content.ReadAsMultipartAsync().Result);
+                    default:
+                        return (T)(object)content.ReadAsStringAsync().Result;
                 }
             }
             return content.ReadAsAsync<T>().Result;
