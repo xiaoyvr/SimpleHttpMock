@@ -120,7 +120,45 @@ namespace test
                     Assert.Equal(result, response.Content.ReadAsStringAsync().Result); // raw string
                 }
             }
+        }
 
+        [Fact]
+        public void should_be_able_to_accept_http_content_multiple_times()
+        {
+            var builder = new MockedHttpServerBuilder();
+            const string result = " a \"c\" b ";
+            builder.WhenGet("/test")
+                .RespondContent(HttpStatusCode.OK, request=>new StringContent(result));
+            using (builder.Build("http://localhost:1122"))
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    Assert.Equal(result, 
+                        httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "http://localhost:1122/test")).Result.Content.ReadAsStringAsync().Result); // raw string
+
+                    Assert.Equal(result, 
+                        httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "http://localhost:1122/test")).Result.Content.ReadAsStringAsync().Result); // raw string
+                }
+            }
+
+        }
+
+        [Fact]
+        public void should_be_able_to_accept_raw_object()
+        {
+            var builder = new MockedHttpServerBuilder();
+            int result = 56;
+            builder.WhenGet("/test")
+                .Respond(HttpStatusCode.OK, result);
+            using (builder.Build("http://localhost:1122"))
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    var response = httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "http://localhost:1122/test")).Result;
+                    var actual = response.Content.ReadAsStringAsync().Result;
+                    Assert.Equal(result.ToString(), actual);
+                }
+            }
         }
 
         [Fact]

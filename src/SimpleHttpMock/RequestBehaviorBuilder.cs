@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using Newtonsoft.Json;
+using SimpleHttpMock.responses;
 
 namespace SimpleHttpMock
 {
@@ -61,15 +62,24 @@ namespace SimpleHttpMock
         public RequestBehaviorBuilder Respond(HttpStatusCode httpStatusCode, object response, Uri location = null)
         {
             statusCode = httpStatusCode;
-            Response = response;
+            Response = new ObjectResponseCreator(response);
             Location = location;
             return this;
         }
 
+        [Obsolete("This method creates mock that can be used only once, because after first call, the content instance is disposed. Please use a safer version of this method: RespondContent(code, request => new StringContent('my content'), location)")]
         public RequestBehaviorBuilder RespondContent(HttpStatusCode httpStatusCode, HttpContent content, Uri location = null)
         {
             statusCode = httpStatusCode;
-            Response = content;
+            Response = new HttpContentResponseCreator(request => content);
+            Location = location;
+            return this;
+        }
+
+        public RequestBehaviorBuilder RespondContent(HttpStatusCode httpStatusCode, Func<HttpRequestMessage,HttpContent> contentFn, Uri location = null)
+        {
+            statusCode = httpStatusCode;
+            Response = new HttpContentResponseCreator(contentFn);
             Location = location;
             return this;
         }
@@ -81,7 +91,7 @@ namespace SimpleHttpMock
             return this;
         }
 
-        protected object Response = string.Empty;
+        protected IResponseCreator Response = new ObjectResponseCreator(string.Empty);
 
         protected Uri Location = default(Uri);
 
