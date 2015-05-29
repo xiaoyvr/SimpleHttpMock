@@ -1,11 +1,13 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SimpleHttpMock
 {
     internal class MockHandler : DelegatingHandler
     {
-        private readonly RequestBehaviors requestBehaviors;
+        private RequestBehaviors requestBehaviors;
 
         public MockHandler(RequestBehaviors requestBehaviors)
         {
@@ -17,6 +19,13 @@ namespace SimpleHttpMock
             var tcs = new TaskCompletionSource<HttpResponseMessage>();
             tcs.SetResult(requestBehaviors.CreateResponse(request));
             return tcs.Task;
+        }
+
+        public void Reconfigure(IEnumerable<RequestBehavior> behaviors, bool deleteExistingMocks)
+        {
+            requestBehaviors = deleteExistingMocks
+                ? new RequestBehaviors(behaviors)
+                : new RequestBehaviors(behaviors.Concat(requestBehaviors.Behaviors));
         }
     }
 }

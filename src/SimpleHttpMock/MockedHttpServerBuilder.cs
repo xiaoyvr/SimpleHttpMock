@@ -16,6 +16,11 @@ namespace SimpleHttpMock
             return new MockedHttpServer(handler, baseAddress, setup);
         }
 
+        public void Reconfigure(MockedHttpServer server, bool deleteExistingMocks)
+        {
+            server.ReconfigureBehaviors(builders.Select(b => b.Build()), deleteExistingMocks);
+        }
+
         public RequestBehaviorBuilder WhenGet(string uri)
         {
             return WhenGet(Matchers.Is(uri));

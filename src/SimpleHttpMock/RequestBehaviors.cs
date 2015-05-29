@@ -7,17 +7,19 @@ namespace SimpleHttpMock
 {
     class RequestBehaviors
     {
-        private readonly IEnumerable<RequestBehavior> behaviors;
+        private readonly RequestBehavior[] _behaviors;
+
+        public IEnumerable<RequestBehavior> Behaviors { get { return _behaviors; } }
 
         public RequestBehaviors(IEnumerable<RequestBehavior> behaviors)
         {
-            this.behaviors = behaviors;
+            _behaviors = behaviors.ToArray();
         }
 
         public HttpResponseMessage CreateResponse(HttpRequestMessage request)
         {
             var httpRequestMessageWrapper = new HttpRequestMessageWrapper(request);
-            var requestBehavior = behaviors.FirstOrDefault(behavior => behavior.Process(httpRequestMessageWrapper));
+            var requestBehavior = Behaviors.FirstOrDefault(behavior => behavior.Process(httpRequestMessageWrapper));
 
             if (requestBehavior != null)
                 return requestBehavior.CreateResponseMessage(request);
