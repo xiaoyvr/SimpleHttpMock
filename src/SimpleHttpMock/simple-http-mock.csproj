@@ -75,6 +75,9 @@
     <Compile Include="RequestBehaviorBuilder.cs" />
     <Compile Include="RequestBehaviors.cs" />
     <Compile Include="RequestProcessor.cs" />
+    <Compile Include="responses\HttpContentResponseCreator.cs" />
+    <Compile Include="responses\IResponseCreator.cs" />
+    <Compile Include="responses\ObjectResponseCreator.cs" />
     <Compile Include="WildCardMatcher.cs" />
   </ItemGroup>
   <ItemGroup>

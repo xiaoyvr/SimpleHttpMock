@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
+using SimpleHttpMock.responses;
 
 namespace SimpleHttpMock
 {
     class RequestBehavior
     {
         private readonly HttpMethod method;
-        public object Response { get; private set; }
+        public IResponseCreator ResponseCreator { get; private set; }
         public Uri Location { get; set; }
         public HttpStatusCode StatusCode { get; private set; }
         public Func<string, bool> urlMatcher { get; private set; }
@@ -16,10 +19,10 @@ namespace SimpleHttpMock
         public IDictionary<string, string> Headers { get; private set; }
 
 
-        public RequestBehavior(HttpStatusCode statusCode, Func<string, bool> urlMatcher, HttpMethod method, IRequestProcessor requestProcessor, object response, Uri location,IDictionary<string,string> headers )
+        public RequestBehavior(HttpStatusCode statusCode, Func<string, bool> urlMatcher, HttpMethod method, IRequestProcessor requestProcessor, IResponseCreator responseCreator, Uri location, IDictionary<string, string> headers)
         {
             this.method = method;
-            Response = response;
+            ResponseCreator = responseCreator;
             Location = location;
             StatusCode = statusCode;
             this.urlMatcher = urlMatcher;
@@ -33,6 +36,17 @@ namespace SimpleHttpMock
             var isUriMatch = urlMatcher(pathAndQuery);
             var isMethodMatch = httpRequestMessageWrapper.Method.Equals(method.ToString());
             return isUriMatch && isMethodMatch && RequestProcessor.Process(httpRequestMessageWrapper);
+        }
+
+        public HttpResponseMessage CreateResponseMessage(HttpRequestMessage request)
+        {
+            HttpResponseMessage httpResponseMessage = ResponseCreator.CreateResponseFor(request,StatusCode);
+
+            if (Headers != null && Headers.Count > 0)
+                Headers.ToList().ForEach(header => httpResponseMessage.Headers.Add(header.Key, header.Value));
+
+            httpResponseMessage.Headers.Location = Location;
+            return httpResponseMessage;
         }
     }
 }
