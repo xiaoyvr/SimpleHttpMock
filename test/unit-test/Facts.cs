@@ -228,7 +228,7 @@ namespace test
                 //altered behavior
                 Assert.Equal(HttpStatusCode.InternalServerError, httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "http://localhost:1122/test")).Result.StatusCode);
                 //the default response
-                Assert.Equal(HttpStatusCode.OK, httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Put, "http://localhost:1122/test")).Result.StatusCode);
+                Assert.Equal(HttpStatusCode.NotFound, httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Put, "http://localhost:1122/test")).Result.StatusCode);
             }
         }
 
