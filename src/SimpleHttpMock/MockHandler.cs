@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace SimpleHttpMock
@@ -21,6 +22,7 @@ namespace SimpleHttpMock
             return tcs.Task;
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void Reconfigure(IEnumerable<RequestBehavior> behaviors, bool deleteExistingMocks)
         {
             requestBehaviors = deleteExistingMocks

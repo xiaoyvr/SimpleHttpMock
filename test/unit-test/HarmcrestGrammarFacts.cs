@@ -14,7 +14,7 @@ namespace test
         [Theory]
         [InlineData("/staffs", HttpStatusCode.InternalServerError)]
         [InlineData("/users", HttpStatusCode.InternalServerError)]
-        [InlineData("/assignees", HttpStatusCode.OK)]
+        [InlineData("/assignees", HttpStatusCode.NotFound)]
         public void should_support_is_regex(string url, HttpStatusCode expectedStatusCode)
         {
             var serverBuilder = new MockedHttpServerBuilder();

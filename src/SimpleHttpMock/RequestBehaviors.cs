@@ -23,7 +23,7 @@ namespace SimpleHttpMock
 
             if (requestBehavior != null)
                 return requestBehavior.CreateResponseMessage(request);
-            return request.CreateResponse(HttpStatusCode.OK);
+            return request.CreateResponse(HttpStatusCode.NotFound);
         }
     }
 
