@@ -24,7 +24,7 @@ namespace test
 
             using (serverBuilder.Build(BaseAddress))
             {
-                var response = Get(string.Format("{0}{1}", BaseAddress, url));
+                var response = Get($"{BaseAddress}{url}");
                 Assert.Equal(expectedStatusCode, response.StatusCode);
             }
         }
@@ -39,7 +39,7 @@ namespace test
 
             using (serverBuilder.Build(BaseAddress))
             {
-                var response = SendHttpRequest(string.Format("{0}/staffs", BaseAddress), HttpMethod.Head);
+                var response = SendHttpRequest($"{BaseAddress}/staffs", HttpMethod.Head);
                 Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
             }
         }
@@ -55,7 +55,7 @@ namespace test
             using (serverBuilder.Build(BaseAddress))
             {
                 var data = new {Name = "Staff", Email = "emal@staff.com"};
-                var response = Post(string.Format("{0}/staffs", BaseAddress), data);
+                var response = Post($"{BaseAddress}/staffs", data);
                 Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
             }
         }

@@ -1,36 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Web.Http.SelfHost;
+using System.Web.Http;
+using Microsoft.Owin.Hosting;
+using Owin;
 
 namespace SimpleHttpMock
 {
-    public class MockedHttpServer : IDisposable
+    public sealed class MockedHttpServer : IDisposable
     {
-        private readonly HttpSelfHostServer httpSelfHostServer;
-        private readonly DelegatingHandler _byPassHandler;
+        private readonly DelegatingHandler byPassHandler;
+        readonly IDisposable server;
 
-        public MockedHttpServer(DelegatingHandler byPassHandler, string baseAddress, Action<HttpSelfHostConfiguration> setup = null)
+        public MockedHttpServer(DelegatingHandler byPassHandler, string baseAddress, Action<HttpConfiguration> setup = null)
         {
-            _byPassHandler = byPassHandler;
-            var config = new HttpSelfHostConfiguration(baseAddress);
-            config.MessageHandlers.Add(_byPassHandler);
-            if (setup != null)
+            this.byPassHandler = byPassHandler;
+            server = WebApp.Start(baseAddress, b =>
             {
-                setup(config);
-            }
-            httpSelfHostServer = new HttpSelfHostServer(config);
-            httpSelfHostServer.OpenAsync().Wait();
+                var configuration = new HttpConfiguration();
+                configuration.MessageHandlers.Add(this.byPassHandler);
+                setup?.Invoke(configuration);
+                b.UseWebApi(configuration);
+            });
         }
 
         public void Dispose()
         {
-            httpSelfHostServer.CloseAsync().Wait();
+            server.Dispose();
         }
 
         internal void ReconfigureBehaviors(IEnumerable<RequestBehavior> behaviors, bool deleteExistingMocks)
         {
-            var mockHandler = _byPassHandler as MockHandler;
+            var mockHandler = byPassHandler as MockHandler;
             if (mockHandler == null)
                 throw new NotSupportedException("MockedHttpServer has been constructed with handler not allowing reconfiguration");
             mockHandler.Reconfigure(behaviors, deleteExistingMocks);

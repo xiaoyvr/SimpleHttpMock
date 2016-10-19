@@ -17,9 +17,12 @@ namespace SimpleHttpMock
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
         {
-            var tcs = new TaskCompletionSource<HttpResponseMessage>();
-            tcs.SetResult(requestBehaviors.CreateResponse(request));
-            return tcs.Task;
+            var httpResponseMessage = requestBehaviors.CreateResponse(request);
+            if (request.Method == HttpMethod.Head)
+            {
+                httpResponseMessage.Content = null;
+            }
+            return Task.FromResult(httpResponseMessage);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]

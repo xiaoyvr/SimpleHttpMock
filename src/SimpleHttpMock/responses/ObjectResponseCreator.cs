@@ -6,16 +6,16 @@ namespace SimpleHttpMock.responses
 {
     public class ObjectResponseCreator : IResponseCreator
     {
-        private readonly object _content;
+        private readonly object content;
 
         public ObjectResponseCreator(object content)
         {
-            _content = content;
+            this.content = content;
         }
 
         public HttpResponseMessage CreateResponseFor(HttpRequestMessage request, HttpStatusCode statusCode)
         {
-            return request.CreateResponse(statusCode, _content);
+            return request.CreateResponse(statusCode, content);
         }
     }
 }

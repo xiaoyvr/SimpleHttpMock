@@ -112,7 +112,7 @@ namespace test
             var builder = new MockedHttpServerBuilder();
             const string result = " a \"c\" b ";
             builder.WhenGet(string.Format("/test"))
-                .RespondContent(HttpStatusCode.OK, new StringContent(result));
+                .RespondContent(HttpStatusCode.OK, r => new StringContent(result));
             using (builder.Build("http://localhost:1122"))
             {
                 using (var httpClient = new HttpClient())
@@ -242,7 +242,7 @@ namespace test
 
             builder.WhenPost(string.Format("/test"))
                 .WithRequest(r => actualRequest = r)
-                .RespondContent(HttpStatusCode.OK, new StringContent(result));
+                .RespondContent(HttpStatusCode.OK, r => new StringContent(result));
 
             using (builder.Build("http://localhost:1122"))
             {
@@ -272,7 +272,7 @@ namespace test
             const string content = "dummy";
             const string headerValue = "testHeaderValue";
             builder.WhenGet(string.Format("/test"))
-                .RespondContent(HttpStatusCode.OK, new StringContent(content))
+                .RespondContent(HttpStatusCode.OK, r => new StringContent(content))
                 .RespondHeaders(new { headerKey = headerValue });
             using (builder.Build("http://localhost:1122"))
             {

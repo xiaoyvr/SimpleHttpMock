@@ -6,16 +6,16 @@ namespace SimpleHttpMock.responses
 {
     public class HttpContentResponseCreator : IResponseCreator
     {
-        private readonly Func<HttpRequestMessage, HttpContent> _contentFn;
+        private readonly Func<HttpRequestMessage, HttpContent> contentFn;
 
         public HttpContentResponseCreator(Func<HttpRequestMessage, HttpContent> contentFn)
         {
-            _contentFn = contentFn;
+            this.contentFn = contentFn;
         }
 
         public HttpResponseMessage CreateResponseFor(HttpRequestMessage request, HttpStatusCode statusCode)
         {
-            return new HttpResponseMessage { Content = _contentFn(request), StatusCode = statusCode };
+            return new HttpResponseMessage { Content = contentFn(request), StatusCode = statusCode };
         }
     }
 }

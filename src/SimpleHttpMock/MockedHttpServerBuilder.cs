@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Web.Http.SelfHost;
+using System.Web.Http;
 
 namespace SimpleHttpMock
 {
     public class MockedHttpServerBuilder
     {
         private readonly List<RequestBehaviorBuilder> builders = new List<RequestBehaviorBuilder>();
-        public MockedHttpServer Build(string baseAddress, Action<HttpSelfHostConfiguration> setup = null)
+        public MockedHttpServer Build(string baseAddress, Action<HttpConfiguration> setup = null)
         {
             var requestBehaviors = new RequestBehaviors(builders.Select(b => b.Build()));
             var handler = new MockHandler(requestBehaviors);
