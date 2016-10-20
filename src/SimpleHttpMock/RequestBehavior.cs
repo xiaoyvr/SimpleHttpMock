@@ -33,7 +33,7 @@ namespace SimpleHttpMock
         public bool Process(HttpRequestMessageWrapper httpRequestMessageWrapper)
         {
             var pathAndQuery = httpRequestMessageWrapper.RequestUri.PathAndQuery;
-            var isUriMatch = urlMatcher(pathAndQuery);
+            var isUriMatch = urlMatcher(pathAndQuery) || urlMatcher(Uri.UnescapeDataString(pathAndQuery));
             var isMethodMatch = httpRequestMessageWrapper.Method.Equals(method.ToString());
             return isUriMatch && isMethodMatch && RequestProcessor.Process(httpRequestMessageWrapper);
         }

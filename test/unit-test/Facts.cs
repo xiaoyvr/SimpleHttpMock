@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -13,7 +14,7 @@ namespace test
     public class Facts
     {
         [Fact]
-        public void should_be_not_case_sensitive()
+        public void should_be_case_insensitive()
         {
             var builder = new MockedHttpServerBuilder();
             builder
@@ -281,6 +282,22 @@ namespace test
                     var response = httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "http://localhost:1122/test")).Result;
                     Assert.Equal(content, response.Content.ReadAsStringAsync().Result);
                     Assert.Equal(headerValue, response.Headers.GetValues("headerKey").First());
+                }
+            }
+
+        }
+        [Fact]
+        public void should_be_able_to_match_dollor()
+        {
+            var isWellFormedUriString = Uri.IsWellFormedUriString("/te$st", UriKind.Relative);           
+            var builder = new MockedHttpServerBuilder();
+            builder.WhenGet("/te$st").Respond(HttpStatusCode.OK);
+            using (builder.Build("http://localhost:1122"))
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    var response = httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "http://localhost:1122/te$st")).Result;
+                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
                 }
             }
 
