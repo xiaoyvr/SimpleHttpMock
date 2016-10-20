@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SimpleHttpMock;
 using Xunit;
@@ -36,7 +34,7 @@ namespace test
             var request = default(List<StreamEntity>).ToRequest();
             var builder = new MockedHttpServerBuilder();
             builder
-                .WhenPost(string.Format("/streams/test"))
+                .WhenPost("/streams/test")
                 .WithRequest<List<StreamEntity>>(r => request = r)
                 .Respond(HttpStatusCode.OK);
             using (builder.Build("http://localhost:1122"))
@@ -66,7 +64,7 @@ namespace test
             var request = default(object).ToRequest();
             var builder = new MockedHttpServerBuilder();
             builder
-                .WhenPost(string.Format("/streams/test"))
+                .WhenPost("/streams/test")
                 .WithRequest<object>(r => request = r)
                 .Respond(HttpStatusCode.OK);
             using (builder.Build("http://localhost:1122"))
@@ -112,7 +110,7 @@ namespace test
         {
             var builder = new MockedHttpServerBuilder();
             const string result = " a \"c\" b ";
-            builder.WhenGet(string.Format("/test"))
+            builder.WhenGet("/test")
                 .RespondContent(HttpStatusCode.OK, r => new StringContent(result));
             using (builder.Build("http://localhost:1122"))
             {
@@ -241,7 +239,7 @@ namespace test
 
             var actualRequest = ActualRequest.ToRequest();
 
-            builder.WhenPost(string.Format("/test"))
+            builder.WhenPost("/test")
                 .WithRequest(r => actualRequest = r)
                 .RespondContent(HttpStatusCode.OK, r => new StringContent(result));
 
@@ -272,7 +270,7 @@ namespace test
             var builder = new MockedHttpServerBuilder();
             const string content = "dummy";
             const string headerValue = "testHeaderValue";
-            builder.WhenGet(string.Format("/test"))
+            builder.WhenGet("/test")
                 .RespondContent(HttpStatusCode.OK, r => new StringContent(content))
                 .RespondHeaders(new { headerKey = headerValue });
             using (builder.Build("http://localhost:1122"))
