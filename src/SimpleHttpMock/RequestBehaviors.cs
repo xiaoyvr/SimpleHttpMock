@@ -19,7 +19,7 @@ namespace SimpleHttpMock
         public HttpResponseMessage CreateResponse(HttpRequestMessage request)
         {
             var httpRequestMessageWrapper = new HttpRequestMessageWrapper(request);
-            var requestBehavior = Behaviors.FirstOrDefault(behavior => behavior.Process(httpRequestMessageWrapper));
+            var requestBehavior = Behaviors.Reverse().FirstOrDefault(behavior => behavior.Process(httpRequestMessageWrapper));
 
             if (requestBehavior != null)
                 return requestBehavior.CreateResponseMessage(request);

@@ -1,5 +1,4 @@
 using System;
-using System.Dynamic;
 using System.Net.Http;
 using Newtonsoft.Json;
 
@@ -36,15 +35,22 @@ namespace SimpleHttpMock
         {
             if (actualRequest == null)
             {
-                var content = request.Content.ReadAsStringAsync().Result;                
+                var content = request.Content.ReadAsStringAsync().Result;
+                dynamic body = NotJson() ? content : JsonConvert.DeserializeObject<dynamic>(content);
                 actualRequest = new ActualRequest
                 {
                     RequestUri = request.RequestUri,
-                    RequestBody = JsonConvert.DeserializeObject<dynamic>(content),
+                    RequestBody = body,
                     Method = request.Method.ToString()
                 };
             }
             return (ActualRequest)actualRequest;
+        }
+
+        bool NotJson()
+        {
+            var mediaTypeHeaderValue = request.Content.Headers.ContentType;
+            return mediaTypeHeaderValue != null && mediaTypeHeaderValue.MediaType != "application/json";
         }
 
         public Uri RequestUri { get; private set; }

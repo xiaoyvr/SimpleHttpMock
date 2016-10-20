@@ -30,7 +30,7 @@ namespace SimpleHttpMock
         {
             requestBehaviors = renew
                 ? new RequestBehaviors(behaviors)
-                : new RequestBehaviors(behaviors.Concat(requestBehaviors.Behaviors));
+                : new RequestBehaviors(requestBehaviors.Behaviors.Concat(behaviors));
         }
     }
 }
