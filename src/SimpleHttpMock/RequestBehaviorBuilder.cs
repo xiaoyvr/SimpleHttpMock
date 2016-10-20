@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using Newtonsoft.Json;
@@ -10,6 +11,7 @@ namespace SimpleHttpMock
     public class RequestBehaviorBuilder
     {
         private readonly Func<string, bool> urlMatcher;
+
         private readonly HttpMethod method;
 
         private HttpStatusCode statusCode;
@@ -32,11 +34,55 @@ namespace SimpleHttpMock
             processor = new RequestProcessor<TModel>(matchFunc?? (r => true), action);
             return this;
         }
+        public RequestBehaviorBuilder MatchRequest<TModel>(TModel schema = default(TModel), Func<ActualRequest<TModel>, bool> matchFunc = null)
+        {
+            processor = new RequestProcessor<TModel>(matchFunc ?? (r => true), r => { });
+            return this;
+        }
 
         public RequestBehaviorBuilder WithRequest(Action<ActualRequest> action, Func<ActualRequest, bool> matchFunc = null)
         {
             processor = new RequestProcessor(matchFunc ?? (r => true), action);
             return this;
+        }
+        public RequestBehaviorBuilder MatchRequest(Func<ActualRequest, bool> matchFunc = null)
+        {
+            processor = new RequestProcessor(matchFunc ?? (r => true), r => { });
+            return this;
+        }
+
+        public RequestBehaviorBuilder WithRequest<TModel>(
+            Action<ActualRequest<TModel>> action,
+            Func<ActualRequest<TModel>, bool> matchFunc = null)
+        {
+            processor = new RequestProcessor<TModel>(matchFunc ?? (r => true), action);
+            return this;
+        }
+        public RequestBehaviorBuilder MatchRequest<TModel>(Func<ActualRequest<TModel>, bool> matchFunc = null)
+        {
+            processor = new RequestProcessor<TModel>(matchFunc ?? (r => true), r => { });
+            return this;
+        }
+
+        public Func<ActualRequest<T>> Retrieve<T>(T schema = default (T))
+        {
+            processor = processor??new AlwaysMatchProcessor<T>();
+            return () => (ActualRequest<T>)processor.Match;
+        }
+        public Func<ActualRequest> Retrieve()
+        {
+            processor = processor ?? new AlwaysMatchProcessor();
+            return () => (ActualRequest)processor.Match;
+        }
+        public Func<IEnumerable<ActualRequest<T>>> RetrieveAll<T>(T schema = default (T))
+        {
+            processor = processor??new AlwaysMatchProcessor<T>();
+            return () => processor.Matches.OfType<ActualRequest<T>>();
+        }
+        public Func<IEnumerable<ActualRequest>> RetrieveAll()
+        {
+            processor = processor ?? new AlwaysMatchProcessor();
+            return () => processor.Matches.OfType<ActualRequest>();
         }
 
         public RequestBehaviorBuilder WithMultipartRequest(Action<ActualRequest<MultipartContentProvider>> action)
@@ -45,13 +91,6 @@ namespace SimpleHttpMock
             return this;
         }
 
-        public RequestBehaviorBuilder WithRequest<TModel>(
-            Action<ActualRequest<TModel>> action, 
-            Func<ActualRequest<TModel>, bool> matchFunc = null)
-        {
-            processor = new RequestProcessor<TModel>(matchFunc?? (r => true), action);
-            return this;
-        }
 
         public RequestBehaviorBuilder Respond(HttpStatusCode httpStatusCode)
         {
@@ -86,8 +125,7 @@ namespace SimpleHttpMock
 
         public RequestBehaviorBuilder RespondHeaders(dynamic headers)
         {
-            this.headers =
-                JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(headers));
+            this.headers = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(headers));
             return this;
         }
 

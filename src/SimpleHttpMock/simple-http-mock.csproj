@@ -82,6 +82,7 @@
     <Compile Include="AlwaysMatchProcessor.cs" />
     <Compile Include="AnonymousTypeExtensions.cs" />
     <Compile Include="CustomHttpContentExtension.cs" />
+    <Compile Include="HttpRequestMessageWrapper.cs" />
     <Compile Include="IRequestProcessor.cs" />
     <Compile Include="Matchers.cs" />
     <Compile Include="MockedHttpServer.cs" />
