@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Web.Http;
 using Microsoft.Owin.Hosting;
 using Owin;
@@ -9,10 +8,10 @@ namespace SimpleHttpMock
 {
     public sealed class MockedHttpServer : IDisposable
     {
-        private readonly DelegatingHandler byPassHandler;
+        private readonly MockHandler byPassHandler;
         readonly IDisposable server;
 
-        public MockedHttpServer(DelegatingHandler byPassHandler, string baseAddress, Action<HttpConfiguration> setup = null)
+        internal MockedHttpServer(MockHandler byPassHandler, string baseAddress, Action<HttpConfiguration> setup = null)
         {
             this.byPassHandler = byPassHandler;
             server = WebApp.Start(baseAddress, b =>
@@ -23,18 +22,19 @@ namespace SimpleHttpMock
                 b.UseWebApi(configuration);
             });
         }
+        public MockedHttpServer(string baseAddress, Action<HttpConfiguration> setup = null) 
+            : this(new MockHandler(new RequestBehaviors(new RequestBehavior[0])), baseAddress, setup)
+        {
+        }
 
         public void Dispose()
         {
             server.Dispose();
         }
 
-        internal void ReconfigureBehaviors(IEnumerable<RequestBehavior> behaviors, bool deleteExistingMocks)
+        internal void ReconfigureBehaviors(IEnumerable<RequestBehavior> behaviors, bool renew)
         {
-            var mockHandler = byPassHandler as MockHandler;
-            if (mockHandler == null)
-                throw new NotSupportedException("MockedHttpServer has been constructed with handler not allowing reconfiguration");
-            mockHandler.Reconfigure(behaviors, deleteExistingMocks);
+            byPassHandler.Reconfigure(behaviors, renew);
         }
     }
 }

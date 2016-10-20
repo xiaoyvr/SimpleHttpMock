@@ -5,15 +5,15 @@ using System.Net.Http;
 
 namespace SimpleHttpMock
 {
-    class RequestBehaviors
+    internal class RequestBehaviors
     {
-        private readonly RequestBehavior[] _behaviors;
+        private readonly RequestBehavior[] behaviors;
 
-        public IEnumerable<RequestBehavior> Behaviors { get { return _behaviors; } }
+        public IEnumerable<RequestBehavior> Behaviors => behaviors;
 
         public RequestBehaviors(IEnumerable<RequestBehavior> behaviors)
         {
-            _behaviors = behaviors.ToArray();
+            this.behaviors = behaviors.ToArray();
         }
 
         public HttpResponseMessage CreateResponse(HttpRequestMessage request)

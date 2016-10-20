@@ -289,7 +289,6 @@ namespace test
         [Fact]
         public void should_be_able_to_match_dollor()
         {
-            var isWellFormedUriString = Uri.IsWellFormedUriString("/te$st", UriKind.Relative);           
             var builder = new MockedHttpServerBuilder();
             builder.WhenGet("/te$st").Respond(HttpStatusCode.OK);
             using (builder.Build("http://localhost:1122"))
@@ -303,5 +302,20 @@ namespace test
 
         }
 
+        [Fact]
+        public void should_be_able_create_server_and_build()
+        {
+            using (var server = new MockedHttpServer("http://localhost:1122"))
+            {
+                var builder = new MockedHttpServerBuilder();
+                builder.WhenGet("/test").Respond(HttpStatusCode.OK);
+                builder.Build(server);
+                using (var httpClient = new HttpClient())
+                {
+                    var response = httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "http://localhost:1122/test")).Result;
+                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                }
+            }
+        }
     }
 }

@@ -26,9 +26,9 @@ namespace SimpleHttpMock
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public void Reconfigure(IEnumerable<RequestBehavior> behaviors, bool deleteExistingMocks)
+        public void Reconfigure(IEnumerable<RequestBehavior> behaviors, bool renew)
         {
-            requestBehaviors = deleteExistingMocks
+            requestBehaviors = renew
                 ? new RequestBehaviors(behaviors)
                 : new RequestBehaviors(behaviors.Concat(requestBehaviors.Behaviors));
         }
