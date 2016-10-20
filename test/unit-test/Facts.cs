@@ -257,8 +257,8 @@ namespace test
 
                     var response = httpClient.SendAsync(request).Result;
                     Assert.Equal(result, response.Content.ReadAsStringAsync().Result); // raw string
-                    Assert.Equal("a", actualRequest.RequestBody.Field);
-                    Assert.Equal("b", actualRequest.RequestBody.Field2);
+                    Assert.Equal("a", (string)actualRequest.RequestBody.Field);
+                    Assert.Equal("b", (string)actualRequest.RequestBody.Field2);
                 }
             }
 
@@ -339,12 +339,15 @@ namespace test
                     Assert.Equal("http://localhost:1122/test1", actualRequest.RequestUri.ToString());
 
                     response = httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "http://localhost:1122/test2")).Result;
-                    Assert.Null(requestRetriever());
+                    var retriever = requestRetriever();
+                    Assert.NotNull(retriever);
+                    Assert.Equal("http://localhost:1122/test1", retriever.RequestUri.ToString());
                     Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
                 }
             }
         }
+
         [Fact]
         public void should_be_able_to_match_and_retrive_request()
         {
@@ -365,5 +368,20 @@ namespace test
             }
         }
 
+        [Fact]
+        public void should_be_able_to_process_string_as_json()
+        {
+            var builder = new MockedHttpServerBuilder();
+            var retrieve = builder.WhenPut("/te$st").Respond(HttpStatusCode.OK, new {}).Retrieve();
+            using (builder.Build("http://localhost:1122"))
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    var response = httpClient.PutAsJsonAsync("http://localhost:1122/te$st", "abc").Result;
+                    Assert.Equal(HttpStatusCode.OK,response.StatusCode);
+                    Assert.Equal("abc", retrieve().RequestBody);
+                }
+            }
+        }
     }
 }

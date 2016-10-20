@@ -36,11 +36,11 @@ namespace SimpleHttpMock
         {
             if (actualRequest == null)
             {
-                var content = request.Content.ReadAsStringAsync().Result;
+                var content = request.Content.ReadAsStringAsync().Result;                
                 actualRequest = new ActualRequest
                 {
                     RequestUri = request.RequestUri,
-                    RequestBody = JsonConvert.DeserializeObject<ExpandoObject>(content),
+                    RequestBody = JsonConvert.DeserializeObject<dynamic>(content),
                     Method = request.Method.ToString()
                 };
             }

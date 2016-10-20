@@ -16,7 +16,7 @@ namespace SimpleHttpMock
             return new MockedHttpServer(handler, baseAddress, setup);
         }
 
-        public void Build(MockedHttpServer server, bool renew = true)
+        public void Build(MockedHttpServer server, bool renew = false)
         {
             server.ReconfigureBehaviors(builders.Select(b => b.Build()), renew);
         }

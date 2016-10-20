@@ -67,12 +67,12 @@ namespace SimpleHttpMock
         public Func<ActualRequest<T>> Retrieve<T>(T schema = default (T))
         {
             processor = processor??new AlwaysMatchProcessor<T>();
-            return () => (ActualRequest<T>)processor.Match;
+            return () => (ActualRequest<T>)processor.Matches.LastOrDefault();
         }
         public Func<ActualRequest> Retrieve()
         {
             processor = processor ?? new AlwaysMatchProcessor();
-            return () => (ActualRequest)processor.Match;
+            return () => (ActualRequest)processor.Matches.LastOrDefault();
         }
         public Func<IEnumerable<ActualRequest<T>>> RetrieveAll<T>(T schema = default (T))
         {
