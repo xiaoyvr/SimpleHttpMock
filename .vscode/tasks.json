@@ -2,12 +2,11 @@
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "0.1.0",
-    "command": "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\MSBuild.exe",
+    "command": "./packages/FAKE/tools/Fake.exe",
     "args": [
-        // Ask msbuild to generate full paths for file names.
-        "/property:GenerateFullPaths=true"
+        "build.fsx"
     ],
-    "taskSelector": "/t:",
+    "taskSelector": "",
     "showOutput": "silent",
     "tasks": [
         {
@@ -15,7 +14,18 @@
             // Show the output window only if unrecognized errors occur.
             "showOutput": "silent",
             // Use the standard MS compiler pattern to detect errors, warnings and infos
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
+            "args": [
+                "build"
+            ]
+        },
+        {
+            "taskName": "Test",
+            "isTestCommand": true,
+            "problemMatcher": "$msCompile",
+            "args": [
+                "test", "-st" 
+            ]   
         }
     ]
 }

@@ -1,5 +1,7 @@
 source https://www.nuget.org/api/v2
 
+nuget FAKE
 nuget Microsoft.AspNet.WebApi.OwinSelfHost 5.2.3 framework: >= net461
 nuget Microsoft.Net.Http 2.0.20710.0 framework: >= net461
 nuget xunit.extensions 1.9.2 framework: >= net40
+nuget xunit.runners 1.9.2

@@ -1,5 +1,6 @@
 NUGET
   remote: https://www.nuget.org/api/v2
+    FAKE (4.45.1)
     Microsoft.AspNet.WebApi.Client (5.2.3) - framework: >= net461
       Newtonsoft.Json (>= 6.0.4) - framework: >= net45, portable-wp80+win+wp81+wpa81
     Microsoft.AspNet.WebApi.Core (5.2.3) - framework: >= net461
@@ -24,3 +25,4 @@ NUGET
     xunit (1.9.2) - framework: >= net40
     xunit.extensions (1.9.2) - framework: >= net40
       xunit (1.9.2)
+    xunit.runners (1.9.2)
