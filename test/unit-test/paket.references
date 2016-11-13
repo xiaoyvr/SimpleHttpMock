@@ -1,0 +1,4 @@
+Microsoft.AspNet.WebApi.Core
+Microsoft.Net.Http
+Microsoft.Owin.Host.HttpListener
+xunit.extensions

@@ -1,0 +1,26 @@
+NUGET
+  remote: https://www.nuget.org/api/v2
+    Microsoft.AspNet.WebApi.Client (5.2.3) - framework: >= net461
+      Newtonsoft.Json (>= 6.0.4) - framework: >= net45, portable-wp80+win+wp81+wpa81
+    Microsoft.AspNet.WebApi.Core (5.2.3) - framework: >= net461
+      Microsoft.AspNet.WebApi.Client (>= 5.2.3)
+    Microsoft.AspNet.WebApi.Owin (5.2.3) - framework: >= net461
+      Microsoft.AspNet.WebApi.Core (>= 5.2.3 < 5.3)
+      Microsoft.Owin (>= 2.0.2)
+      Owin (>= 1.0)
+    Microsoft.AspNet.WebApi.OwinSelfHost (5.2.3) - framework: >= net461
+      Microsoft.AspNet.WebApi.Owin (>= 5.2.3 < 5.3)
+      Microsoft.Owin.Host.HttpListener (>= 2.0.2)
+      Microsoft.Owin.Hosting (>= 2.0.2)
+    Microsoft.Net.Http (2.0.20710) - framework: >= net461
+    Microsoft.Owin (2.0.2) - framework: >= net461
+      Owin (>= 1.0)
+    Microsoft.Owin.Host.HttpListener (2.0.2) - framework: >= net461
+    Microsoft.Owin.Hosting (2.0.2) - framework: >= net461
+      Microsoft.Owin (>= 2.0.2)
+      Owin (>= 1.0)
+    Newtonsoft.Json (6.0.4) - framework: >= net461
+    Owin (1.0) - framework: >= net461
+    xunit (1.9.2) - framework: >= net40
+    xunit.extensions (1.9.2) - framework: >= net40
+      xunit (1.9.2)

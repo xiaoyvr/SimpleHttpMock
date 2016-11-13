@@ -3,6 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{6597BD2A-FAE1-4EFA-BC01-2959A568E5C5}"
+	ProjectSection(SolutionItems) = preProject
+		paket.dependencies = paket.dependencies
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "simple-http-mock", "src\SimpleHttpMock\simple-http-mock.csproj", "{821B1527-A55A-4928-90C7-232A91986426}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "unit-test", "test\unit-test\unit-test.csproj", "{097D7CCE-F1D9-4637-AC11-1962B0A732C3}"
