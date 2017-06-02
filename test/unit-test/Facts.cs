@@ -383,5 +383,23 @@ namespace test
                 }
             }
         }
+
+        [Fact]
+        public void should_be_able_to_retrieve_headers2()
+        {
+            var builder = new MockedHttpServerBuilder();
+            var requestRetriever = builder.WhenGet("/te$st").Respond(HttpStatusCode.OK).Retrieve();
+            using (builder.Build("http://localhost:1122"))
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:1122/te$st");
+                    request.Headers.Add("X-Test", "test-value");
+                    httpClient.SendAsync(request).Wait();
+                    var actualRequest = requestRetriever();
+                    Assert.Equal("test-value", actualRequest.RequestHeaders["X-Test"]);
+                }
+            }
+        }
     }
 }
