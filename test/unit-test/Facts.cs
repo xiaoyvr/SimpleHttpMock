@@ -383,5 +383,31 @@ namespace test
                 }
             }
         }
+
+        [Fact]
+        public void should_be_able_to_match_the_last_mocked_request()
+        {
+            var builder = new MockedHttpServerBuilder();
+            var firstRequestRetriever = builder.WhenGet("/multi-time-to-mock")
+                .RespondContent(HttpStatusCode.OK, request => new StringContent("mock uri for first time"))
+                .MatchRequest(r => true)
+                .Retrieve();
+            var secondRequestRetriever = builder.WhenGet("/multi-time-to-mock")
+                .RespondContent(HttpStatusCode.BadGateway, request => new StringContent("mock uri for second time"))
+                .MatchRequest(r => true)
+                .Retrieve();
+            using (builder.Build("http://localhost:1122"))
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    var actualRequest = secondRequestRetriever();
+                    Assert.Null(actualRequest);
+                    var response = httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "http://localhost:1122/multi-time-to-mock")).Result;
+                    actualRequest = secondRequestRetriever();
+                    Assert.NotNull(actualRequest);
+                    Assert.NotNull(response);
+                }
+            }
+        }
     }
 }
